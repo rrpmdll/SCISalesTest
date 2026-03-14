@@ -1,3 +1,4 @@
+using SCISalesTest.WebApp.Handlers;
 using SCISalesTest.WebApp.Services;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -6,12 +7,14 @@ builder.Services.AddApplicationInsightsTelemetry();
 
 builder.Services.AddControllersWithViews();
 
+builder.Services.AddTransient<AuthTokenHandler>();
+
 builder.Services.AddHttpClient<IProductApiService, ProductApiService>(client =>
 {
     client.BaseAddress = new Uri(builder.Configuration["WebApi:BaseAddress"]
         ?? "https://localhost:5000");
     client.Timeout = TimeSpan.FromSeconds(30);
-});
+}).AddHttpMessageHandler<AuthTokenHandler>();
 
 var app = builder.Build();
 

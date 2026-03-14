@@ -60,7 +60,7 @@ public class GetProductsHandlerTests
         // Arrange
         _productServiceMock
             .Setup(s => s.GetAllProductsAsync())
-            .ReturnsAsync(Enumerable.Empty<ProductDto>());
+            .ReturnsAsync([]);
 
         // Act
         var result = await _handler.Handle(new GetProductsQuery(), CancellationToken.None);

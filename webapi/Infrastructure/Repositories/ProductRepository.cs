@@ -21,7 +21,8 @@ public class ProductRepository : IProductRepository
         return await StoredProcedureHelper.ExecuteStoredProcedureSingleAsync<Product>(
             connection,
             SqlProviderHelper.GetStoredProcedureName(SpEnum.SpGetProductById),
-            new { Id = id });
+            new { Id = id }
+        );
     }
 
     public async Task<IEnumerable<Product>> GetAllAsync()
@@ -29,7 +30,8 @@ public class ProductRepository : IProductRepository
         using var connection = _context.CreateConnection();
         return await StoredProcedureHelper.ExecuteStoredProcedureListAsync<Product>(
             connection,
-            SqlProviderHelper.GetStoredProcedureName(SpEnum.SpGetAllProducts));
+            SqlProviderHelper.GetStoredProcedureName(SpEnum.SpGetAllProducts)
+        );
     }
 
     public async Task<Product> CreateAsync(Product product)
@@ -44,7 +46,8 @@ public class ProductRepository : IProductRepository
                 product.Description,
                 product.Price,
                 product.UnitsInStock
-            });
+            }
+        );
 
         return createdProduct!;
     }
@@ -63,7 +66,8 @@ public class ProductRepository : IProductRepository
                 product.Price,
                 product.UnitsInStock,
                 product.IsActive
-            });
+            }
+        );
     }
 
     public async Task<bool> DeleteAsync(int id)
@@ -72,7 +76,8 @@ public class ProductRepository : IProductRepository
         var rowsAffected = await StoredProcedureHelper.ExecuteStoredProcedureScalarAsync<int>(
             connection,
             SqlProviderHelper.GetStoredProcedureName(SpEnum.SpDeleteProduct),
-            new { Id = id });
+            new { Id = id }
+        );
 
         return rowsAffected > 0;
     }

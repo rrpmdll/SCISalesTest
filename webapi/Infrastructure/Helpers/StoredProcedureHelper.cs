@@ -9,51 +9,47 @@ public static class StoredProcedureHelper
         IDbConnection connection,
         string storedProcedureName,
         object? parameters = null,
-        IDbTransaction? transaction = null)
-    {
-        return await connection.QueryFirstOrDefaultAsync<T>(
+        IDbTransaction? transaction = null
+    ) => await connection.QueryFirstOrDefaultAsync<T>(
             storedProcedureName,
             parameters,
             transaction,
-            commandType: CommandType.StoredProcedure);
-    }
+            commandType: CommandType.StoredProcedure
+    );
 
     public static async Task<IEnumerable<T>> ExecuteStoredProcedureListAsync<T>(
         IDbConnection connection,
         string storedProcedureName,
         object? parameters = null,
-        IDbTransaction? transaction = null)
-    {
-        return await connection.QueryAsync<T>(
+        IDbTransaction? transaction = null
+    ) => await connection.QueryAsync<T>(
             storedProcedureName,
             parameters,
             transaction,
-            commandType: CommandType.StoredProcedure);
-    }
+            commandType: CommandType.StoredProcedure
+    );
 
     public static async Task<int> ExecuteStoredProcedureAsync(
         IDbConnection connection,
         string storedProcedureName,
         object? parameters = null,
-        IDbTransaction? transaction = null)
-    {
-        return await connection.ExecuteAsync(
+        IDbTransaction? transaction = null
+    ) => await connection.ExecuteAsync(
             storedProcedureName,
             parameters,
             transaction,
-            commandType: CommandType.StoredProcedure);
-    }
+            commandType: CommandType.StoredProcedure
+    );
 
     public static async Task<T?> ExecuteStoredProcedureScalarAsync<T>(
         IDbConnection connection,
         string storedProcedureName,
         object? parameters = null,
-        IDbTransaction? transaction = null)
-    {
-        return await connection.ExecuteScalarAsync<T>(
+        IDbTransaction? transaction = null
+    ) => await connection.ExecuteScalarAsync<T>(
             storedProcedureName,
             parameters,
             transaction,
-            commandType: CommandType.StoredProcedure);
-    }
+            commandType: CommandType.StoredProcedure
+    );
 }

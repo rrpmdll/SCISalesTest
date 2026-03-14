@@ -4,11 +4,14 @@ using SCISalesTest.Application.DTOs.Products;
 
 namespace SCISalesTest.Application.Feature.Products.GetProductById;
 
-public class GetProductByIdHandler : IRequestHandler<GetProductByIdQuery, ProductDto>
+public class GetProductByIdHandler : 
+    IRequestHandler<GetProductByIdQuery, ProductDto>
 {
     private readonly ProductService _productService;
 
-    public GetProductByIdHandler(ProductService productService)
+    public GetProductByIdHandler(
+        ProductService productService
+    )
     {
         _productService = productService;
     }

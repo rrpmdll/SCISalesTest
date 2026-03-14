@@ -11,5 +11,5 @@ public class ExchangeRateResponseDto
     public string BaseCode { get; set; } = string.Empty;
 
     [JsonPropertyName("rates")]
-    public Dictionary<string, decimal> Rates { get; set; } = new();
+    public Dictionary<string, decimal> Rates { get; set; } = [];
 }

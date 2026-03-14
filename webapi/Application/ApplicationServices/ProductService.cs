@@ -28,7 +28,9 @@ public class ProductService
         _messagesProvider = messagesProvider;
     }
 
-    public virtual async Task<ProductDto> CreateProductAsync(CreateProductDto createDto)
+    public virtual async Task<ProductDto> CreateProductAsync(
+        CreateProductDto createDto
+    )
     {
         var product = _mapper.Map<Product>(createDto);
         var createdProduct = await _productRepository.CreateAsync(product);
@@ -44,7 +46,9 @@ public class ProductService
     public virtual async Task<ProductDto> GetProductByIdAsync(int id)
     {
         var product = await _productRepository.GetByIdAsync(id)
-            ?? throw new NotFoundException(string.Format(_messagesProvider.ProductNotFound, id));
+            ?? throw new NotFoundException(
+                string.Format(_messagesProvider.ProductNotFound, id)
+            );
 
         return _mapper.Map<ProductDto>(product);
     }
@@ -52,11 +56,15 @@ public class ProductService
     public virtual async Task<ProductDto> UpdateProductAsync(UpdateProductDto updateDto)
     {
         _ = await _productRepository.GetByIdAsync(updateDto.Id)
-            ?? throw new NotFoundException(string.Format(_messagesProvider.ProductNotFound, updateDto.Id));
+            ?? throw new NotFoundException(
+                string.Format(_messagesProvider.ProductNotFound, updateDto.Id)
+            );
 
         var product = _mapper.Map<Product>(updateDto);
         var updatedProduct = await _productRepository.UpdateAsync(product)
-            ?? throw new NotFoundException(string.Format(_messagesProvider.ProductNotFound, updateDto.Id));
+            ?? throw new NotFoundException(
+                string.Format(_messagesProvider.ProductNotFound, updateDto.Id)
+            );
 
         return _mapper.Map<ProductDto>(updatedProduct);
     }
@@ -64,18 +72,27 @@ public class ProductService
     public virtual async Task<bool> DeleteProductAsync(int id)
     {
         _ = await _productRepository.GetByIdAsync(id)
-            ?? throw new NotFoundException(string.Format(_messagesProvider.ProductNotFound, id));
+            ?? throw new NotFoundException(
+                string.Format(_messagesProvider.ProductNotFound, id)
+            );
 
         return await _productRepository.DeleteAsync(id);
     }
 
-    public virtual async Task<ProductWithExchangeRateDto> GetProductWithExchangeRateAsync(int productId, string targetCurrency)
+    public virtual async Task<ProductWithExchangeRateDto> GetProductWithExchangeRateAsync(
+        int productId, 
+        string targetCurrency
+    )
     {
         var product = await _productRepository.GetByIdAsync(productId)
-            ?? throw new NotFoundException(string.Format(_messagesProvider.ProductNotFound, productId));
+            ?? throw new NotFoundException(
+                string.Format(_messagesProvider.ProductNotFound, productId)
+            );
 
         var exchangeRate = await _exchangeRateService.GetExchangeRateAsync(
-            AppConstants.DEFAULT_CURRENCY, targetCurrency);
+            AppConstants.DEFAULT_CURRENCY, 
+            targetCurrency
+        );
 
         var dto = _mapper.Map<ProductWithExchangeRateDto>(product);
         dto.OriginalCurrency = AppConstants.DEFAULT_CURRENCY;

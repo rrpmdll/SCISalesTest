@@ -4,11 +4,14 @@ using SCISalesTest.Application.ExternalServices;
 
 namespace SCISalesTest.Application.Feature.CurrencyConversion;
 
-public class ConvertCurrencyHandler : IRequestHandler<ConvertCurrencyQuery, CurrencyConversionDto>
+public class ConvertCurrencyHandler : 
+    IRequestHandler<ConvertCurrencyQuery, CurrencyConversionDto>
 {
     private readonly IExchangeRateService _exchangeRateService;
 
-    public ConvertCurrencyHandler(IExchangeRateService exchangeRateService)
+    public ConvertCurrencyHandler(
+        IExchangeRateService exchangeRateService
+    )
     {
         _exchangeRateService = exchangeRateService;
     }
@@ -19,7 +22,8 @@ public class ConvertCurrencyHandler : IRequestHandler<ConvertCurrencyQuery, Curr
     )
     {
         var exchangeRate = await _exchangeRateService.GetExchangeRateAsync(
-            request.SourceCurrency, request.TargetCurrency
+            request.SourceCurrency, 
+            request.TargetCurrency
         );
 
         return new CurrencyConversionDto

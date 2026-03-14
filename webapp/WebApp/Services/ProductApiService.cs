@@ -1,4 +1,3 @@
-using System.Net.Http.Headers;
 using SCISalesTest.WebApp.Models;
 
 namespace SCISalesTest.WebApp.Services;
@@ -7,8 +6,6 @@ public class ProductApiService : IProductApiService
 {
     private readonly HttpClient _httpClient;
     private readonly ILogger<ProductApiService> _logger;
-    private string? _cachedToken;
-    private DateTime _tokenExpiration;
 
     public ProductApiService(HttpClient httpClient, ILogger<ProductApiService> logger)
     {
@@ -16,43 +13,10 @@ public class ProductApiService : IProductApiService
         _logger = logger;
     }
 
-    private async Task EnsureAuthenticatedAsync()
-    {
-        if (!string.IsNullOrEmpty(_cachedToken) && DateTime.UtcNow < _tokenExpiration)
-        {
-            _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _cachedToken);
-            return;
-        }
-
-        var loginResponse = await _httpClient.PostAsJsonAsync("api/auth/login", new
-        {
-            Username = "admin",
-            Password = "Admin123!"
-        });
-
-        if (loginResponse.IsSuccessStatusCode)
-        {
-            var result = await loginResponse.Content.ReadFromJsonAsync<LoginApiResponse>();
-            if (result is not null)
-            {
-                _cachedToken = result.Token;
-                _tokenExpiration = result.Expiration.AddMinutes(-5);
-                _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _cachedToken);
-            }
-        }
-    }
-
-    private class LoginApiResponse
-    {
-        public string Token { get; set; } = string.Empty;
-        public DateTime Expiration { get; set; }
-    }
-
     public async Task<IEnumerable<ProductViewModel>> GetAllAsync()
     {
         try
         {
-            await EnsureAuthenticatedAsync();
             var result = await _httpClient.GetFromJsonAsync<IEnumerable<ProductViewModel>>("api/product");
             return result ?? Enumerable.Empty<ProductViewModel>();
         }
@@ -67,7 +31,6 @@ public class ProductApiService : IProductApiService
     {
         try
         {
-            await EnsureAuthenticatedAsync();
             return await _httpClient.GetFromJsonAsync<ProductViewModel>($"api/product/{id}");
         }
         catch (HttpRequestException ex) when (ex.StatusCode == System.Net.HttpStatusCode.NotFound)
@@ -85,7 +48,6 @@ public class ProductApiService : IProductApiService
     {
         try
         {
-            await EnsureAuthenticatedAsync();
             var response = await _httpClient.PostAsJsonAsync("api/product", new
             {
                 model.Name,
@@ -108,7 +70,6 @@ public class ProductApiService : IProductApiService
     {
         try
         {
-            await EnsureAuthenticatedAsync();
             var response = await _httpClient.PutAsJsonAsync($"api/product/{model.Id}", new
             {
                 model.Id,
@@ -133,7 +94,6 @@ public class ProductApiService : IProductApiService
     {
         try
         {
-            await EnsureAuthenticatedAsync();
             var response = await _httpClient.DeleteAsync($"api/product/{id}");
             return response.IsSuccessStatusCode;
         }
@@ -148,7 +108,6 @@ public class ProductApiService : IProductApiService
     {
         try
         {
-            await EnsureAuthenticatedAsync();
             return await _httpClient.GetFromJsonAsync<ProductExchangeRateViewModel>(
                 $"api/product/{id}/exchange-rate?targetCurrency={Uri.EscapeDataString(targetCurrency)}");
         }
@@ -163,7 +122,6 @@ public class ProductApiService : IProductApiService
     {
         try
         {
-            await EnsureAuthenticatedAsync();
             var result = await _httpClient.GetFromJsonAsync<IEnumerable<ProductExchangeRateViewModel>>(
                 $"api/product/exchange-rate?targetCurrency={Uri.EscapeDataString(targetCurrency)}");
             return result ?? Enumerable.Empty<ProductExchangeRateViewModel>();
@@ -179,7 +137,6 @@ public class ProductApiService : IProductApiService
     {
         try
         {
-            await EnsureAuthenticatedAsync();
             var response = await _httpClient.GetFromJsonAsync<CurrencyConversionApiResponse>(
                 $"api/currency/convert?amount={amount}&sourceCurrency={Uri.EscapeDataString(sourceCurrency)}&targetCurrency={Uri.EscapeDataString(targetCurrency)}");
 
@@ -214,7 +171,6 @@ public class ProductApiService : IProductApiService
     {
         try
         {
-            await EnsureAuthenticatedAsync();
             var result = await _httpClient.GetFromJsonAsync<List<string>>("api/currency/supported-currencies");
             return result ?? new List<string>();
         }

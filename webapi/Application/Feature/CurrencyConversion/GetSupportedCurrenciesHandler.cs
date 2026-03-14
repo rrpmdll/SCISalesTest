@@ -8,7 +8,9 @@ public class GetSupportedCurrenciesHandler :
 {
     private readonly IExchangeRateService _exchangeRateService;
 
-    public GetSupportedCurrenciesHandler(IExchangeRateService exchangeRateService)
+    public GetSupportedCurrenciesHandler(
+        IExchangeRateService exchangeRateService
+    )
     {
         _exchangeRateService = exchangeRateService;
     }
