@@ -6,15 +6,118 @@ Technical assessment for Senior Developer — Product Management System built wi
 
 ## Table of Contents
 
+- [Prerequisites](#prerequisites)
+- [Getting Started](#getting-started)
 - [Architecture Overview](#architecture-overview)
 - [Technology Stack](#technology-stack)
 - [Project Structure](#project-structure)
-- [Prerequisites](#prerequisites)
-- [Getting Started](#getting-started)
 - [Running with Docker](#running-with-docker)
 - [API Documentation](#api-documentation)
 - [Running Tests](#running-tests)
 - [External API Integration](#external-api-integration)
+- [Design Patterns & Principles](#design-patterns--principles)
+
+---
+
+## Prerequisites
+
+- [.NET 8 SDK](https://dotnet.microsoft.com/en-us/download/dotnet/8.0)
+- [SQL Server](https://www.microsoft.com/en-us/sql-server/sql-server-downloads) (LocalDB, Express, or Developer Edition)
+- [Docker](https://www.docker.com/products/docker-desktop/) (optional, for containerized execution)
+
+---
+
+## Getting Started
+
+### 1. Clone the Repository
+
+```bash
+git clone https://github.com/rrpmdll/SCISalesTest.git
+cd SCISalesTest
+```
+
+### 2. Set Up the Database
+
+Open SSMS, connect to your SQL Server instance, and execute the database script:
+
+```
+scripts/database.sql
+```
+
+Or via command line:
+
+```bash
+sqlcmd -S localhost -i scripts/database.sql
+```
+
+> If you use SQL Server Express (named instance), use: `sqlcmd -S localhost\SQLEXPRESS -E -i scripts/database.sql`
+
+This will:
+- Create the `SCISalesTestDb` database
+- Create the `Products` table
+- Create all 5 stored procedures (`SP_CreateProduct`, `SP_GetAllProducts`, `SP_GetProductById`, `SP_UpdateProduct`, `SP_DeleteProduct`)
+- Insert 5 sample products as seed data
+
+### 3. Verify the Connection String
+
+Ensure `webapi/WebApi/appsettings.Development.json` has the correct server instance:
+
+```json
+{
+  "ConnectionStrings": {
+    "DefaultConnection": "Server=localhost;Database=SCISalesTestDb;Trusted_Connection=True;TrustServerCertificate=True;"
+  }
+}
+```
+
+> **Note:** If you use SQL Server Express, change `localhost` to `localhost\SQLEXPRESS`.
+
+### 4. Start the WebApi (Backend)
+
+Open a terminal and run:
+
+```bash
+cd webapi/WebApi
+dotnet run --launch-profile https
+```
+
+The API will start on:
+- **https://localhost:5000** (HTTPS)
+- **http://localhost:5001** (HTTP)
+- Swagger UI: **https://localhost:5000/swagger**
+- Health Check: **https://localhost:5000/health**
+
+Wait until you see `Now listening on...` before proceeding.
+
+### 5. Start the WebApp (Frontend)
+
+Open a **second terminal** and run:
+
+```bash
+cd webapp/WebApp
+dotnet run --launch-profile https
+```
+
+The MVC app will start on:
+- **https://localhost:5002** (HTTPS)
+- **http://localhost:5003** (HTTP)
+
+> The WebApp connects to the WebApi at `http://localhost:5001` (configured in `webapp/WebApp/appsettings.json` under `WebApi.BaseAddress`).
+
+### 6. Verify Everything Works
+
+1. Open **https://localhost:5002** in a browser
+2. Navigate to **Products** — you should see the 5 seeded products
+3. Test CRUD operations (Create, Edit, Delete)
+4. Test the **Currency Converter** page
+
+### 7. Run the Tests
+
+```bash
+dotnet test SCISalesTest.sln
+```
+
+Expected result: **19 tests passed** (13 unit + 6 integration).
 
 ---
 
@@ -129,73 +232,6 @@ SCISalesTest/
 
 ---
 
-## Prerequisites
-
-- [.NET 8 SDK](https://dotnet.microsoft.com/en-us/download/dotnet/8.0)
-- [SQL Server](https://www.microsoft.com/en-us/sql-server/sql-server-downloads) (LocalDB, Express, or Developer Edition)
-- [Docker](https://www.docker.com/products/docker-desktop/) (optional, for containerized execution)
-
----
-
-## Getting Started
-
-### 1. Clone the Repository
-
-```bash
-git clone https://github.com/<your-username>/SCISalesTest.git
-cd SCISalesTest
-```
-
-### 2. Set Up the Database
-
-Execute the SQL script against your SQL Server instance:
-
-```bash
-sqlcmd -S localhost -i scripts/database.sql
-```
-
-Or open `scripts/database.sql` in SQL Server Management Studio (SSMS) and execute it. This will:
-- Create the `SCISalesTestDb` database
-- Create the `Products` table
-- Create all 5 stored procedures (Create, GetAll, GetById, Update, Delete)
-- Insert sample seed data
-
-### 3. Update Connection String
-
-Update the connection string in `webapi/WebApi/appsettings.Development.json` if needed:
-
-```json
-{
-  "ConnectionStrings": {
-    "DefaultConnection": "Server=localhost;Database=SCISalesTestDb;Trusted_Connection=True;TrustServerCertificate=True;"
-  }
-}
-```
-
-### 4. Run the WebApi
-
-```bash
-cd webapi/WebApi
-dotnet run --launch-profile https
-```
-
-The API will be available at: **https://localhost:5000**
-Swagger UI: **https://localhost:5000/swagger**
-Health Check: **https://localhost:5000/health**
-
-### 5. Run the WebApp (MVC)
-
-In a separate terminal:
-
-```bash
-cd webapp/WebApp
-dotnet run --launch-profile https
-```
-
-The MVC application will be available at: **https://localhost:5002**
-
----
-
 ## Running with Docker
 
 ```bash
@@ -293,95 +329,4 @@ GET /api/product/{id}/exchange-rate?targetCurrency=COP
 - **Global Exception Handling** — Centralized error handling with custom exceptions
 - **Dependency Injection** — Configured in Infrastructure extensions
 
----
 
-## Local Setup Guide (for Tech Lead)
-
-Step-by-step instructions to run the full application locally on a Windows machine.
-
-### 1. Prerequisites
-
-- **.NET 8 SDK** installed ([download](https://dotnet.microsoft.com/en-us/download/dotnet/8.0))
-- **SQL Server** installed and running (Express, Developer, or any edition)
-- **SQL Server Management Studio (SSMS)** or **sqlcmd** for executing scripts
-
-### 2. Create and Seed the Database
-
-Open SSMS, connect to your SQL Server instance, and execute the database script:
-
-```
-scripts/database.sql
-```
-
-Or via command line:
-
-```bash
-sqlcmd -S localhost\SQLEXPRESS -E -i scripts/database.sql
-```
-
-This will:
-- Create the `SCISalesTestDb` database
-- Create the `Products` table
-- Create all 5 stored procedures (`SP_CreateProduct`, `SP_GetAllProducts`, `SP_GetProductById`, `SP_UpdateProduct`, `SP_DeleteProduct`)
-- Insert 5 sample products as seed data
-
-### 3. Verify the Connection String
-
-Ensure `webapi/WebApi/appsettings.Development.json` has the correct server instance:
-
-```json
-{
-  "ConnectionStrings": {
-    "DefaultConnection": "Server=localhost\\SQLEXPRESS;Database=SCISalesTestDb;Trusted_Connection=True;TrustServerCertificate=True;"
-  }
-}
-```
-
-> **Note:** This uses SQL Server Express (named instance). If you use the default instance, change `localhost\\SQLEXPRESS` to `localhost` or `.` (dot).
-
-### 4. Start the WebApi (Backend)
-
-Open a terminal and run:
-
-```bash
-cd webapi/WebApi
-dotnet run --launch-profile https
-```
-
-The API will start on:
-- **https://localhost:5000** (HTTPS)
-- **http://localhost:5001** (HTTP)
-- Swagger UI: **https://localhost:5000/swagger**
-- Health Check: **https://localhost:5000/health**
-
-Wait until you see `Now listening on...` before proceeding.
-
-### 5. Start the WebApp (Frontend)
-
-Open a **second terminal** and run:
-
-```bash
-cd webapp/WebApp
-dotnet run --launch-profile https
-```
-
-The MVC app will start on:
-- **https://localhost:5002** (HTTPS)
-- **http://localhost:5003** (HTTP)
-
-> The WebApp connects to the WebApi at `http://localhost:5001` (configured in `webapp/WebApp/appsettings.json` under `WebApi.BaseAddress`).
-
-### 6. Verify Everything Works
-
-1. Open **https://localhost:5002** in a browser
-2. Navigate to **Products** — you should see the 5 seeded products
-3. Test CRUD operations (Create, Edit, Delete)
-4. Test the **Currency Converter** page
-
-### 7. Run the Tests
-
-```bash
-dotnet test SCISalesTest.sln
-```
-
-Expected result: **19 tests passed** (13 unit + 6 integration).
