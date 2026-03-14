@@ -1,0 +1,103 @@
+@model CurrencyConverterViewModel
+@{
+    ViewData["Title"] = "Currency Converter";
+}
+
+<div class="row justify-content-center">
+    <div class="col-lg-8">
+        <div class="text-center mb-4">
+            <h2><i class="bi bi-currency-exchange"></i> Currency Converter</h2>
+            <p class="text-muted">Convert between currencies using live exchange rates</p>
+        </div>
+
+        <div class="card shadow-sm">
+            <div class="card-body p-4">
+                <form method="post" asp-action="Index">
+                    <div class="row g-3 align-items-end">
+                        <div class="col-md-3">
+                            <label asp-for="Amount" class="form-label fw-bold"></label>
+                            <div class="input-group">
+                                <span class="input-group-text"><i class="bi bi-cash"></i></span>
+                                <input asp-for="Amount" class="form-control form-control-lg" type="number" step="0.01" min="0.01" placeholder="0.00" />
+                            </div>
+                            <span asp-validation-for="Amount" class="text-danger small"></span>
+                        </div>
+
+                        <div class="col-md-3">
+                            <label asp-for="SourceCurrency" class="form-label fw-bold"></label>
+                            <select asp-for="SourceCurrency" class="form-select form-select-lg">
+                                @foreach (var code in Model.SupportedCurrencies)
+                                {
+                                    <option value="@code">@code</option>
+                                }
+                            </select>
+                            <span asp-validation-for="SourceCurrency" class="text-danger small"></span>
+                        </div>
+
+                        <div class="col-md-1 text-center d-flex align-items-center justify-content-center pb-2">
+                            <i class="bi bi-arrow-right fs-3 text-primary"></i>
+                        </div>
+
+                        <div class="col-md-3">
+                            <label asp-for="TargetCurrency" class="form-label fw-bold"></label>
+                            <select asp-for="TargetCurrency" class="form-select form-select-lg">
+                                @foreach (var code in Model.SupportedCurrencies)
+                                {
+                                    <option value="@code">@code</option>
+                                }
+                            </select>
+                            <span asp-validation-for="TargetCurrency" class="text-danger small"></span>
+                        </div>
+
+                        <div class="col-md-2 d-flex align-items-end pb-1">
+                            <button type="submit" class="btn btn-primary btn-lg w-100 text-nowrap" title="Convert">
+                                <i class="bi bi-arrow-repeat"></i> Convert
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        @if (Model.HasResult)
+        {
+            <div class="card shadow-sm mt-4 border-success">
+                <div class="card-body p-4 text-center">
+                    <h4 class="text-muted mb-3">Conversion Result</h4>
+                    <div class="row">
+                        <div class="col-md-5">
+                            <div class="p-3 bg-light rounded">
+                                <small class="text-muted d-block">@Model.SourceCurrency</small>
+                                <span class="fs-2 fw-bold text-dark">@Model.Amount.ToString("N2")</span>
+                            </div>
+                        </div>
+                        <div class="col-md-2 d-flex align-items-center justify-content-center">
+                            <i class="bi bi-arrow-right-circle-fill fs-1 text-success"></i>
+                        </div>
+                        <div class="col-md-5">
+                            <div class="p-3 bg-success bg-opacity-10 rounded">
+                                <small class="text-muted d-block">@Model.TargetCurrency</small>
+                                <span class="fs-2 fw-bold text-success">@Model.ConvertedAmount?.ToString("N2")</span>
+                            </div>
+                        </div>
+                    </div>
+                    <hr class="my-3" />
+                    <p class="mb-0 text-muted">
+                        <i class="bi bi-info-circle"></i>
+                        Exchange Rate: <strong>1 @Model.SourceCurrency = @Model.ExchangeRate?.ToString("N6") @Model.TargetCurrency</strong>
+                    </p>
+                </div>
+            </div>
+        }
+
+        <div class="text-center mt-4">
+            <a asp-controller="Product" asp-action="Index" class="btn btn-outline-secondary">
+                <i class="bi bi-arrow-left"></i> Back to Products
+            </a>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

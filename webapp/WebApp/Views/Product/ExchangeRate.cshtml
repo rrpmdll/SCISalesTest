@@ -1,0 +1,77 @@
+@model ProductExchangeRateViewModel
+@{
+    ViewData["Title"] = "Exchange Rate";
+}
+
+<h2><i class="bi bi-currency-exchange"></i> Currency Converter</h2>
+<hr />
+
+<div class="row">
+    <div class="col-md-6">
+        <div class="card shadow-sm mb-4">
+            <div class="card-header bg-dark text-white">
+                <i class="bi bi-box-seam"></i> @Model.Name
+            </div>
+            <div class="card-body">
+                <p class="mb-1"><strong>Description:</strong> @Model.Description</p>
+                <p class="mb-0"><strong>Original Price:</strong>
+                    <span class="text-success fw-bold fs-5">
+                        @Model.OriginalPrice.ToString("C2", System.Globalization.CultureInfo.GetCultureInfo("en-US"))
+                    </span>
+                    <span class="text-muted">(@Model.OriginalCurrency)</span>
+                </p>
+            </div>
+        </div>
+
+        <form method="get" asp-action="ExchangeRate" asp-route-id="@Model.Id">
+            <div class="mb-3">
+                <label for="targetCurrency" class="form-label">Target Currency Code</label>
+                <div class="input-group">
+                    <input type="text" name="targetCurrency" id="targetCurrency" class="form-control"
+                           value="@Model.TargetCurrency" placeholder="e.g., COP, EUR, GBP, JPY"
+                           maxlength="3" required pattern="[A-Za-z]{3}" />
+                    <button type="submit" class="btn btn-success">
+                        <i class="bi bi-arrow-repeat"></i> Convert
+                    </button>
+                </div>
+                <div class="form-text">Enter a 3-letter ISO currency code (e.g., COP, EUR, GBP, JPY, BRL)</div>
+            </div>
+        </form>
+
+        @if (!string.IsNullOrEmpty(Model.TargetCurrency) && Model.ExchangeRate > 0)
+        {
+            <div class="card border-success shadow-sm mt-4">
+                <div class="card-header bg-success text-white">
+                    <i class="bi bi-check-circle"></i> Conversion Result
+                </div>
+                <div class="card-body">
+                    <dl class="row mb-0">
+                        <dt class="col-sm-5">Original Price</dt>
+                        <dd class="col-sm-7">
+                            @Model.OriginalPrice.ToString("N2") @Model.OriginalCurrency
+                        </dd>
+
+                        <dt class="col-sm-5">Exchange Rate</dt>
+                        <dd class="col-sm-7">
+                            1 @Model.OriginalCurrency = @Model.ExchangeRate.ToString("N4") @Model.TargetCurrency
+                        </dd>
+
+                        <dt class="col-sm-5">Converted Price</dt>
+                        <dd class="col-sm-7 fs-4 fw-bold text-primary">
+                            @Model.ConvertedPrice.ToString("N2") @Model.TargetCurrency
+                        </dd>
+                    </dl>
+                </div>
+            </div>
+        }
+    </div>
+</div>
+
+<div class="mt-3">
+    <a asp-action="Details" asp-route-id="@Model.Id" class="btn btn-outline-info">
+        <i class="bi bi-eye"></i> Product Details
+    </a>
+    <a asp-action="Index" class="btn btn-secondary">
+        <i class="bi bi-arrow-left"></i> Back to List
+    </a>
+</div>

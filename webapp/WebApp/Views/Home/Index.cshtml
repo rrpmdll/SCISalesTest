@@ -1,0 +1,80 @@
+@{
+    ViewData["Title"] = "Home";
+}
+
+<div class="text-center py-5">
+    <h1 class="display-4"><i class="bi bi-shop"></i> SCI Sales Test</h1>
+    <p class="lead text-muted">Product Management System with Exchange Rate Integration</p>
+    <hr class="my-4" />
+
+    <div class="row mt-5">
+        <div class="col-md-4">
+            <div class="card h-100 shadow-sm">
+                <div class="card-body text-center">
+                    <i class="bi bi-box-seam display-4 text-primary"></i>
+                    <h5 class="card-title mt-3">Product Management</h5>
+                    <p class="card-text">Full CRUD operations for products using SQL Server stored procedures.</p>
+                    <a asp-controller="Product" asp-action="Index" class="btn btn-primary">
+                        <i class="bi bi-arrow-right"></i> Go to Products
+                    </a>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card h-100 shadow-sm">
+                <div class="card-body text-center">
+                    <i class="bi bi-currency-exchange display-4 text-success"></i>
+                    <h5 class="card-title mt-3">Currency Converter</h5>
+                    <p class="card-text">Convert any amount between currencies using live exchange rates from the Open ER API.</p>
+                    <a asp-controller="Currency" asp-action="Index" class="btn btn-success">
+                        <i class="bi bi-arrow-right"></i> Try It Out
+                    </a>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card h-100 shadow-sm">
+                <div class="card-body text-center">
+                    <i class="bi bi-gear display-4 text-info"></i>
+                    <h5 class="card-title mt-3">Clean Architecture</h5>
+                    <p class="card-text">Built with CQRS, MediatR, AutoMapper, Dapper, and best practices.</p>
+                    <a href="#architecture" class="btn btn-info text-white">
+                        <i class="bi bi-arrow-right"></i> Learn More
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<section id="architecture" class="mt-5">
+    <h3><i class="bi bi-diagram-3"></i> Architecture Overview</h3>
+    <div class="row mt-3">
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header bg-dark text-white">
+                    <i class="bi bi-server"></i> WebApi (Backend)
+                </div>
+                <ul class="list-group list-group-flush">
+                    <li class="list-group-item"><strong>Domain</strong> — Entities, Repositories, Constants, Enums, Exceptions</li>
+                    <li class="list-group-item"><strong>Application</strong> — CQRS Handlers, DTOs, Services, AutoMapper Profiles</li>
+                    <li class="list-group-item"><strong>Infrastructure</strong> — Dapper Context, Stored Procedure Helpers, Repository Implementations</li>
+                    <li class="list-group-item"><strong>WebApi</strong> — REST Controllers, Swagger, Health Checks, Exception Filters</li>
+                </ul>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header bg-primary text-white">
+                    <i class="bi bi-window"></i> WebApp (Frontend)
+                </div>
+                <ul class="list-group list-group-flush">
+                    <li class="list-group-item"><strong>MVC</strong> — Razor Views with Bootstrap 5</li>
+                    <li class="list-group-item"><strong>HttpClient</strong> — Typed service consuming the WebApi</li>
+                    <li class="list-group-item"><strong>Validation</strong> — Client & server-side validation</li>
+                    <li class="list-group-item"><strong>Exchange Rate</strong> — Live currency conversion via Open ER API</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</section>
